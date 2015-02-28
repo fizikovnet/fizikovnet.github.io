@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://yoursite.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://fizikovnet.github.io
+title: Little Geek Blog
+subtitle: 
+author: fizikovnet
 simple_search: https://www.google.com/search
 description:
 

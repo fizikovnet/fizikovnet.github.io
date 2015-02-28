@@ -1,0 +1,11 @@
+---
+layout: post
+title: "test_post"
+date: 2015-03-01 00:56:39 +0300
+comments: true
+categories: [php]
+---
+# Пост
+Текст поста
+
+`какой_то_программный_код($аргумент)` 
