@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Algorithms | Geek Notes]]></title>
+  <link href="http://fizikovnet.github.io/posts/categories/algorithms/atom.xml" rel="self"/>
+  <link href="http://fizikovnet.github.io/"/>
+  <updated>2015-03-04T22:06:20+03:00</updated>
+  <id>http://fizikovnet.github.io/</id>
+  <author>
+    <name><![CDATA[fizikovnet]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Алгоритм пирамидальной сортировки (сортировка кучей)]]></title>
+    <link href="http://fizikovnet.github.io/posts/2015/03/alghoritm-piramidal'noi-sortirovki-sortirovka-kuchiei.html"/>
+    <updated>2015-03-04T20:56:38+03:00</updated>
+    <id>http://fizikovnet.github.io/posts/2015/03/alghoritm-piramidal&#8217;noi-sortirovki-sortirovka-kuchiei</id>
+    <content type="html"><![CDATA[<p>Далее представлен краткий конспект разбора пирамидальной сортировки по книге &laquo;Алгоритмы. Построение и анализ&raquo;
+(Томас Кормен, Чарльз Лейзерсон, Рональд Ривест, Клиффорд Штайн). Примеры кода написаны на языке Java.</p>
+
+<!-- more -->
+
+
+<p><strong>Время работы</strong> - <code>O(n*logn).</code><br>
+<strong>Свойства:</strong></p>
+
+<ul>
+<li>Не требует дополнительной памяти, работает с тем же массивом данных.</li>
+<li>Используется структура данных - <a href="https://ru.wikipedia.org/wiki/%D0%94%D0%B2%D0%BE%D0%B8%D1%87%D0%BD%D0%B0%D1%8F_%D0%BA%D1%83%D1%87%D0%B0">Двоичное дерево (куча)</a> .</li>
+</ul>
+
+
+<h3>Принцип работы:</h3>
+
+<ol>
+<li>Строим пирамиду</li>
+<li>Сохраняем размер массива в отдельную переменную</li>
+<li>Так как максимальный элемент находится в корне т.е. a[0], то меняем местами с последним элементом массива, и уменьшаем размер переменной в которой у нас записан размер массива</li>
+<li>Вызываем метод поддержки свойств пирамиды heapify(array, 0)</li>
+</ol>
+
+
+<p><em>Бинарное дерево с максимальным элементом в корне</em>
+<img src="/images/img_2015_03/1.png" alt="" /> <br></p>
+
+<p><em>Представление бинарного дерева в виде массива</em><br>
+<img src="/images/img_2015_03/2.png" alt="" /><br></p>
+
+<h3>Родитель и потомки любого узла вычисляются по следующем методам:</h3>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="o">/&lt;</span><span class="n">em</span><span class="o">&gt;*</span>
+</span><span class='line'>     <span class="o">*</span>
+</span><span class='line'>     <span class="o">*</span> <span class="nd">@param</span> <span class="kt">int</span> <span class="n">i</span>
+</span><span class='line'>     <span class="o">*</span> <span class="nd">@return</span> <span class="kt">int</span>
+</span><span class='line'>     <span class="o">*</span>
+</span><span class='line'>     <span class="o">*</span> <span class="n">применяем</span> <span class="n">побитовый</span> <span class="n">сдвиг</span> <span class="n">влево</span> <span class="n">для</span> <span class="n">быстрого</span> <span class="n">увеличения</span> <span class="n">индекса</span> <span class="n">в</span> <span class="mi">2</span> <span class="n">раза</span>
+</span><span class='line'>     <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;/</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="nf">left</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * </span>
+</span><span class='line'><span class="cm"> * @param int i</span>
+</span><span class='line'><span class="cm"> * @return int</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">private</span> <span class="kt">int</span> <span class="nf">right</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="o">(</span><span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * </span>
+</span><span class='line'><span class="cm"> * @param int i</span>
+</span><span class='line'><span class="cm"> * @return int</span>
+</span><span class='line'><span class="cm"> * </span>
+</span><span class='line'><span class="cm"> * прменяем побитовый сдвиг вправо для быстрого уменьшения индекса в 2 раза</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">parent</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">gt</span><span class="o">;&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h3>Метод поддержки свойств пирамиды:</h3>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="o">/&lt;</span><span class="n">em</span><span class="o">&gt;*</span>
+</span><span class='line'>     <span class="o">*</span>
+</span><span class='line'>     <span class="o">*</span> <span class="nd">@param</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">arr</span>
+</span><span class='line'>     <span class="o">*</span> <span class="nd">@param</span> <span class="kt">int</span> <span class="n">length</span>
+</span><span class='line'>     <span class="o">*</span> <span class="nd">@param</span> <span class="kt">int</span> <span class="n">i</span>
+</span><span class='line'>     <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;/</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">maxHeapify</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">arr</span><span class="o">,</span> <span class="kt">int</span> <span class="n">length</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">left</span> <span class="o">=</span> <span class="n">left</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">right</span> <span class="o">=</span> <span class="n">right</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">largest</span> <span class="o">=</span> <span class="n">i</span><span class="o">;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="nf">if</span> <span class="o">(</span><span class="n">left</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">length</span> <span class="o">&amp;</span><span class="n">amp</span><span class="o">;&amp;</span><span class="n">amp</span><span class="o">;</span> <span class="n">arr</span><span class="o">[</span><span class="n">left</span><span class="o">]</span> <span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">])</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">largest</span> <span class="o">=</span> <span class="n">left</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">right</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">length</span> <span class="o">&amp;</span><span class="n">amp</span><span class="o">;&amp;</span><span class="n">amp</span><span class="o">;</span> <span class="n">arr</span><span class="o">[</span><span class="n">right</span><span class="o">]</span> <span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">arr</span><span class="o">[</span><span class="n">largest</span><span class="o">])</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">largest</span> <span class="o">=</span> <span class="n">right</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">largest</span> <span class="o">!=</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">swap</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="n">i</span><span class="o">,</span> <span class="n">largest</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">maxHeapify</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="n">length</span><span class="o">,</span> <span class="n">largest</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><em>Пример работы</em>
+<img src="/images/img_2015_03/3.png" alt="" /></p>
+
+<h3>Метод создания пирамиды</h3>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="o">/&lt;</span><span class="n">em</span><span class="o">&gt;*</span>
+</span><span class='line'>     <span class="o">*</span>
+</span><span class='line'>     <span class="o">*</span> <span class="nd">@param</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">arr</span>
+</span><span class='line'>     <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;/</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">buildMaxHeap</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">arr</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="nf">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="na">length</span> <span class="o">/</span> <span class="mi">2</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">gt</span><span class="o">;=</span><span class="mi">0</span><span class="o">;</span> <span class="o">--</span><span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">maxHeapify</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">,</span> <span class="n">i</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><em>Пример работы построения кучи из массива A</em>
+<img src="/images/img_2015_03/4.png" alt="" />
+<img src="/images/img_2015_03/5.png" alt="" /></p>
+
+<h3>Метод сортировки:</h3>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="o">/&lt;</span><span class="n">em</span><span class="o">&gt;*</span>
+</span><span class='line'>     <span class="o">*</span>
+</span><span class='line'>     <span class="o">*</span> <span class="nd">@param</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">arr</span>
+</span><span class='line'>     <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;/</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">heapSort</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">arr</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">buildMaxHeap</span><span class="o">(</span><span class="n">arr</span><span class="o">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">swap</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">length</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">maxHeapify</span><span class="o">(</span><span class="n">arr</span><span class="o">,</span> <span class="n">length</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">length</span><span class="o">&amp;</span><span class="n">ndash</span><span class="o">;;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><em>Пример работы алгоритма пирамидальной сортировки</em>
+<img src="/images/img_2015_03/6.png" alt="" />
+<img src="/images/img_2015_03/7.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+</feed>

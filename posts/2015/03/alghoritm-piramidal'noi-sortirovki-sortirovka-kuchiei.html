@@ -1,24 +1,90 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Geek Notes]]></title>
-  <link href="http://fizikovnet.github.io/atom.xml" rel="self"/>
-  <link href="http://fizikovnet.github.io/"/>
-  <updated>2015-03-04T22:06:20+03:00</updated>
-  <id>http://fizikovnet.github.io/</id>
-  <author>
-    <name><![CDATA[fizikovnet]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Алгоритм пирамидальной сортировки (сортировка кучей) - Geek Notes</title>
+
+  <meta name="author" content="fizikovnet">
+
+<meta name="description" content="блог о языках программирования, алгоритмах, структурах данных и т.д.">
+<meta name="keywords" content="java, программирование, кодинг, алгоритмы">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <entry>
-    <title type="html"><![CDATA[Алгоритм пирамидальной сортировки (сортировка кучей)]]></title>
-    <link href="http://fizikovnet.github.io/posts/2015/03/alghoritm-piramidal'noi-sortirovki-sortirovka-kuchiei.html"/>
-    <updated>2015-03-04T20:56:38+03:00</updated>
-    <id>http://fizikovnet.github.io/posts/2015/03/alghoritm-piramidal&#8217;noi-sortirovki-sortirovka-kuchiei</id>
-    <content type="html"><![CDATA[<p>Далее представлен краткий конспект разбора пирамидальной сортировки по книге &laquo;Алгоритмы. Построение и анализ&raquo;
+  <link rel="canonical" href="http://fizikovnet.github.io/posts/2015/03/alghoritm-piramidal'noi-sortirovki-sortirovka-kuchiei.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Geek Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Geek Notes</a></h1>
+  
+    <h2>заметки/статьи/переводы на темы программирования, алгоритмов и etc.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="fizikovnet.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Поиск"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Главная</a></li>
+  <li><a href="/blog/archives">Архив</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Алгоритм пирамидальной сортировки (сортировка кучей)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-04T20:56:38+03:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:56 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Далее представлен краткий конспект разбора пирамидальной сортировки по книге &laquo;Алгоритмы. Построение и анализ&raquo;
 (Томас Кормен, Чарльз Лейзерсон, Рональд Ривест, Клиффорд Штайн). Примеры кода написаны на языке Java.</p>
 
 <!-- more -->
@@ -44,10 +110,10 @@
 
 
 <p><em>Бинарное дерево с максимальным элементом в корне</em>
-<img src="http://fizikovnet.github.io/images/img_2015_03/1.png" alt="" /> <br></p>
+<img src="/images/img_2015_03/1.png" alt="" /> <br></p>
 
 <p><em>Представление бинарного дерева в виде массива</em><br>
-<img src="http://fizikovnet.github.io/images/img_2015_03/2.png" alt="" /><br></p>
+<img src="/images/img_2015_03/2.png" alt="" /><br></p>
 
 <h3>Родитель и потомки любого узла вычисляются по следующем методам:</h3>
 
@@ -164,7 +230,7 @@
 
 
 <p><em>Пример работы</em>
-<img src="http://fizikovnet.github.io/images/img_2015_03/3.png" alt="" /></p>
+<img src="/images/img_2015_03/3.png" alt="" /></p>
 
 <h3>Метод создания пирамиды</h3>
 
@@ -192,8 +258,8 @@
 
 
 <p><em>Пример работы построения кучи из массива A</em>
-<img src="http://fizikovnet.github.io/images/img_2015_03/4.png" alt="" />
-<img src="http://fizikovnet.github.io/images/img_2015_03/5.png" alt="" /></p>
+<img src="/images/img_2015_03/4.png" alt="" />
+<img src="/images/img_2015_03/5.png" alt="" /></p>
 
 <h3>Метод сортировки:</h3>
 
@@ -227,9 +293,140 @@
 
 
 <p><em>Пример работы алгоритма пирамидальной сортировки</em>
-<img src="http://fizikovnet.github.io/images/img_2015_03/6.png" alt="" />
-<img src="http://fizikovnet.github.io/images/img_2015_03/7.png" alt="" /></p>
-]]></content>
-  </entry>
+<img src="/images/img_2015_03/6.png" alt="" />
+<img src="/images/img_2015_03/7.png" alt="" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-</feed>
+
+<span class="byline author vcard">Posted by <span class="fn">fizikovnet</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-03-04T20:56:38+03:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:56 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/posts/categories/algorithms/'>algorithms</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://fizikovnet.github.io/posts/2015/03/alghoritm-piramidal'noi-sortirovki-sortirovka-kuchiei.html" data-via="fizikovnet" data-counturl="http://fizikovnet.github.io/posts/2015/03/alghoritm-piramidal'noi-sortirovki-sortirovka-kuchiei.html" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Недавние статьи</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/posts/2015/03/alghoritm-piramidal'noi-sortirovki-sortirovka-kuchiei.html">Алгоритм пирамидальной сортировки (сортировка кучей)</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Категории</h1>
+    <ul id="category-list"><li><a href='/posts/categories/algorithms'>algorithms (1)</a></li></ul>
+</section>
+
+<div style="border-bottom:1px solid #e0e0e0; padding:.5em 0; box-shadow:#fff 0 1px"><a href="mailto:fizikovnet@gmail.com" style="float:left; margin-right:10px"><img src="/images/gmail.png" width="30" height="30"></a> <a href="mailto:fizikovnet@gmail.com">fizikovnet@gmail.com</a></div>
+<div style="border-bottom:1px solid #e0e0e0; padding:.5em 0; box-shadow:#fff 0 1px"><a href="https://twitter.com/fizikovnet" style="float:left; margin-right:10px"><img src="/images/twitter.png" width="30" height="30"></a> <a href="https://twitter.com/fizikovnet">@fizikovnet</a></div>
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/fizikovnet?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - fizikovnet -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
