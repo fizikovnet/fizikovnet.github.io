@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Algorithms | Geek Notes]]></title>
   <link href="http://fizikovnet.github.io/posts/categories/algorithms/atom.xml" rel="self"/>
   <link href="http://fizikovnet.github.io/"/>
-  <updated>2015-03-04T22:06:20+03:00</updated>
+  <updated>2015-03-04T22:11:19+03:00</updated>
   <id>http://fizikovnet.github.io/</id>
   <author>
     <name><![CDATA[fizikovnet]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Алгоритм пирамидальной сортировки (сортировка кучей)]]></title>
-    <link href="http://fizikovnet.github.io/posts/2015/03/alghoritm-piramidal'noi-sortirovki-sortirovka-kuchiei.html"/>
+    <link href="http://fizikovnet.github.io/posts/2015/03/alghoritm-piramidalnoi-sortirovki-sortirovka-kuchiei.html"/>
     <updated>2015-03-04T20:56:38+03:00</updated>
-    <id>http://fizikovnet.github.io/posts/2015/03/alghoritm-piramidal&#8217;noi-sortirovki-sortirovka-kuchiei</id>
+    <id>http://fizikovnet.github.io/posts/2015/03/alghoritm-piramidalnoi-sortirovki-sortirovka-kuchiei</id>
     <content type="html"><![CDATA[<p>Далее представлен краткий конспект разбора пирамидальной сортировки по книге &laquo;Алгоритмы. Построение и анализ&raquo;
 (Томас Кормен, Чарльз Лейзерсон, Рональд Ривест, Клиффорд Штайн). Примеры кода написаны на языке Java.</p>
 
