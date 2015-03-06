@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Алгоритм быстрой сортировки (Quick Sort) - Geek Notes</title>
+
+  <meta name="author" content="fizikovnet">
+
+<meta name="description" content="Краткий конспект алгоритма быстрой сортировки, quick sort">
+<meta name="keywords" content="алгоритм, быстрая, сортировка, quick sort">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://fizikovnet.github.io/posts/2015/03/alghoritm-bystroi-sortirovki-quick-sort.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Geek Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-60417978-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Geek Notes</a></h1>
+  
+    <h2>заметки/статьи/переводы на темы программирования, алгоритмов и etc.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="fizikovnet.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Поиск"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Главная</a></li>
+  <li><a href="/blog/archives">Архив</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Алгоритм быстрой сортировки (Quick Sort)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-05T21:28:03+03:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:28 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Далее представлен краткий конспект разбора алгоритма быстрой сортировки по книге &laquo;Алгоритмы. Построение и анализ&raquo;
+(Томас Кормен, Чарльз Лейзерсон, Рональд Ривест, Клиффорд Штайн). Примеры кода написаны на языке Java.</p>
+
+<!-- more -->
+
+
+<p><strong>Время работы</strong></p>
+
+<ul>
+<li>Наихудший вариант: <code>O(n^2)</code></li>
+<li>В среднем случае: <code>O(n*logn)</code></li>
+</ul>
+
+
+<p><strong>Свойства:</strong></p>
+
+<ul>
+<li>Не требует дополнительной памяти, работает с тем же массивом данных. Использует принцип “разделяй и властвуй”.  В большинстве случаев работает за время <code>O(n* logn)</code> и является одним из самых эффективных методов сортировки.</li>
+</ul>
+
+
+<h3>Принцип работы:</h3>
+
+<ol>
+<li>Выбирается опорный элемент (рандомно, либо последний/первый элемент в массиве, либо среднее арифметическое, если массив состоит из чисел)</li>
+<li>Массив разбивается на два подмассива, в одном элементы не больше опорного, в другом не меньше опорного</li>
+<li>Полученные подмассивы сортируются рекурсивно вызовом процедуры быстрой сортировки</li>
+</ol>
+
+
+<h3>Метод быстрой сортировки:</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * </span>
+</span><span class='line'><span class="cm">     * @param a[] - входящий массив</span>
+</span><span class='line'><span class="cm">     * @param l - индекс крайне левого элемента, с которого начать сравнивания</span>
+</span><span class='line'><span class="cm">     * @param r  - индекс крайне правого элемента, с которого начать сравнивания</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">quickSort</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">l</span><span class="o">,</span> <span class="kt">int</span> <span class="n">r</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">l</span> <span class="o">&lt;</span> <span class="n">r</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kt">int</span> <span class="n">q</span> <span class="o">=</span> <span class="n">partition</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="n">r</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">quickSort</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">quickSort</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">q</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">r</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Для запуска сортировки необходимо выполнить: quickSort(array, 0, array.length - 1);</em></p>
+
+<h3>Метод разбиения массива</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'> <span class="kd">private</span> <span class="kt">int</span> <span class="nf">partition</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">l</span><span class="o">,</span> <span class="kt">int</span> <span class="n">r</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="n">l</span><span class="o">;</span> <span class="c1">// метка на следующий элемент после меньшей части опорного</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">pivot</span> <span class="o">=</span> <span class="n">a</span><span class="o">[</span><span class="n">r</span><span class="o">];</span> <span class="c1">//опорный элемент, относительно которого идут сравнения</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">l</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="o">;</span> <span class="n">i</span><span class="o">++</span> <span class="o">)</span> <span class="c1">// цикл от начального до конечного</span>
+</span><span class='line'>        <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span> <span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">&lt;=</span> <span class="n">pivot</span> <span class="o">)</span>
+</span><span class='line'>            <span class="o">{</span>
+</span><span class='line'>                <span class="c1">// если текущий элемент меньше опроного, то меняем местами текущий элемент</span>
+</span><span class='line'>                <span class="c1">// и элемент на который указывает метка следующего элемента за меньшими опроными</span>
+</span><span class='line'>                <span class="n">swap</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">i</span><span class="o">,</span> <span class="n">x</span><span class="o">);</span>
+</span><span class='line'>                <span class="n">x</span><span class="o">++;</span> <span class="c1">// увеличиваем метку, т.к. до этой метки остались только элементы меньшие опроному</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="o">--</span><span class="n">x</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Пример работы из книги Кормена:</em><br>
+<img src="/images/img_2015_03/8.png" alt="" /> <br>
+    <em>Небольшое отличие: в коде x - здесь можно считать i + 1, а счетчик i в коде здесь - это j</em></p>
+
+<p><em>Пример разделения массива в середине работы процедуры partition:</em>
+<img src="/images/img_2015_03/9.png" alt="" />
+<img src="/images/img_2015_03/10.png" alt="" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">fizikovnet</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-03-05T21:28:03+03:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:28 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/posts/categories/algorithms/'>algorithms</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://fizikovnet.github.io/posts/2015/03/alghoritm-bystroi-sortirovki-quick-sort.html" data-via="fizikovnet" data-counturl="http://fizikovnet.github.io/posts/2015/03/alghoritm-bystroi-sortirovki-quick-sort.html" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/posts/2015/03/alghoritm-piramidalnoi-sortirovki-sortirovka-kuchiei.html" title="Предыдущая статья: Алгоритм пирамидальной сортировки (сортировка кучей)">&laquo; Алгоритм пирамидальной сортировки (сортировка кучей)</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Недавние статьи</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/posts/2015/03/alghoritm-bystroi-sortirovki-quick-sort.html">Алгоритм быстрой сортировки (Quick Sort)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/posts/2015/03/alghoritm-piramidalnoi-sortirovki-sortirovka-kuchiei.html">Алгоритм пирамидальной сортировки (сортировка кучей)</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Категории</h1>
+    <ul id="category-list"><li><a href='/posts/categories/algorithms'>algorithms (2)</a></li></ul>
+</section>
+
+<div style="border-bottom:1px solid #e0e0e0; padding:.5em 0; box-shadow:#fff 0 1px"><a href="https://twitter.com/fizikovnet" style="float:left; margin-right:10px"><img src="/images/twitter.png" width="30" height="30"></a> <a href="https://twitter.com/fizikovnet">@fizikovnet</a></div>
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/fizikovnet?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - fizikovnet -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

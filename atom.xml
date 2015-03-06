@@ -4,7 +4,7 @@
   <title><![CDATA[Geek Notes]]></title>
   <link href="http://fizikovnet.github.io/atom.xml" rel="self"/>
   <link href="http://fizikovnet.github.io/"/>
-  <updated>2015-03-05T21:07:17+03:00</updated>
+  <updated>2015-03-07T01:12:33+03:00</updated>
   <id>http://fizikovnet.github.io/</id>
   <author>
     <name><![CDATA[fizikovnet]]></name>
@@ -12,6 +12,121 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Алгоритм быстрой сортировки (Quick Sort)]]></title>
+    <link href="http://fizikovnet.github.io/posts/2015/03/alghoritm-bystroi-sortirovki-quick-sort.html"/>
+    <updated>2015-03-05T21:28:03+03:00</updated>
+    <id>http://fizikovnet.github.io/posts/2015/03/alghoritm-bystroi-sortirovki-quick-sort</id>
+    <content type="html"><![CDATA[<p>Далее представлен краткий конспект разбора алгоритма быстрой сортировки по книге &laquo;Алгоритмы. Построение и анализ&raquo;
+(Томас Кормен, Чарльз Лейзерсон, Рональд Ривест, Клиффорд Штайн). Примеры кода написаны на языке Java.</p>
+
+<!-- more -->
+
+
+<p><strong>Время работы</strong></p>
+
+<ul>
+<li>Наихудший вариант: <code>O(n^2)</code></li>
+<li>В среднем случае: <code>O(n*logn)</code></li>
+</ul>
+
+
+<p><strong>Свойства:</strong></p>
+
+<ul>
+<li>Не требует дополнительной памяти, работает с тем же массивом данных. Использует принцип “разделяй и властвуй”.  В большинстве случаев работает за время <code>O(n* logn)</code> и является одним из самых эффективных методов сортировки.</li>
+</ul>
+
+
+<h3>Принцип работы:</h3>
+
+<ol>
+<li>Выбирается опорный элемент (рандомно, либо последний/первый элемент в массиве, либо среднее арифметическое, если массив состоит из чисел)</li>
+<li>Массив разбивается на два подмассива, в одном элементы не больше опорного, в другом не меньше опорного</li>
+<li>Полученные подмассивы сортируются рекурсивно вызовом процедуры быстрой сортировки</li>
+</ol>
+
+
+<h3>Метод быстрой сортировки:</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * </span>
+</span><span class='line'><span class="cm">     * @param a[] - входящий массив</span>
+</span><span class='line'><span class="cm">     * @param l - индекс крайне левого элемента, с которого начать сравнивания</span>
+</span><span class='line'><span class="cm">     * @param r  - индекс крайне правого элемента, с которого начать сравнивания</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">quickSort</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">l</span><span class="o">,</span> <span class="kt">int</span> <span class="n">r</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">l</span> <span class="o">&lt;</span> <span class="n">r</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kt">int</span> <span class="n">q</span> <span class="o">=</span> <span class="n">partition</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="n">r</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">quickSort</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">l</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">quickSort</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">q</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">r</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Для запуска сортировки необходимо выполнить: quickSort(array, 0, array.length - 1);</em></p>
+
+<h3>Метод разбиения массива</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'> <span class="kd">private</span> <span class="kt">int</span> <span class="nf">partition</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">l</span><span class="o">,</span> <span class="kt">int</span> <span class="n">r</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="n">l</span><span class="o">;</span> <span class="c1">// метка на следующий элемент после меньшей части опорного</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">pivot</span> <span class="o">=</span> <span class="n">a</span><span class="o">[</span><span class="n">r</span><span class="o">];</span> <span class="c1">//опорный элемент, относительно которого идут сравнения</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">l</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="o">;</span> <span class="n">i</span><span class="o">++</span> <span class="o">)</span> <span class="c1">// цикл от начального до конечного</span>
+</span><span class='line'>        <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span> <span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">&lt;=</span> <span class="n">pivot</span> <span class="o">)</span>
+</span><span class='line'>            <span class="o">{</span>
+</span><span class='line'>                <span class="c1">// если текущий элемент меньше опроного, то меняем местами текущий элемент</span>
+</span><span class='line'>                <span class="c1">// и элемент на который указывает метка следующего элемента за меньшими опроными</span>
+</span><span class='line'>                <span class="n">swap</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">i</span><span class="o">,</span> <span class="n">x</span><span class="o">);</span>
+</span><span class='line'>                <span class="n">x</span><span class="o">++;</span> <span class="c1">// увеличиваем метку, т.к. до этой метки остались только элементы меньшие опроному</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="o">--</span><span class="n">x</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Пример работы из книги Кормена:</em><br>
+<img src="http://fizikovnet.github.io/images/img_2015_03/8.png" alt="" /> <br>
+    <em>Небольшое отличие: в коде x - здесь можно считать i + 1, а счетчик i в коде здесь - это j</em></p>
+
+<p><em>Пример разделения массива в середине работы процедуры partition:</em>
+<img src="http://fizikovnet.github.io/images/img_2015_03/9.png" alt="" />
+<img src="http://fizikovnet.github.io/images/img_2015_03/10.png" alt="" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Алгоритм пирамидальной сортировки (сортировка кучей)]]></title>
