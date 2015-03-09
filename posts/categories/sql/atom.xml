@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Sql | Geek Notes]]></title>
+  <link href="http://fizikovnet.github.io/posts/categories/sql/atom.xml" rel="self"/>
+  <link href="http://fizikovnet.github.io/"/>
+  <updated>2015-03-09T19:35:21+03:00</updated>
+  <id>http://fizikovnet.github.io/</id>
+  <author>
+    <name><![CDATA[fizikovnet]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Типы данных и операторы определения данных SQL]]></title>
+    <link href="http://fizikovnet.github.io/posts/2015/03/tipy-dannykh-i-opieratory-opriedielieniia-dannykh-sql-data-definition-language.html"/>
+    <updated>2015-03-09T18:48:30+03:00</updated>
+    <id>http://fizikovnet.github.io/posts/2015/03/tipy-dannykh-i-opieratory-opriedielieniia-dannykh-sql-data-definition-language</id>
+    <content type="html"><![CDATA[<p>В данном конспекте рассмотрим основные типы данных SQL а также операторы операторы определения данных (Data Definition Language, DDL), которые позволяют создавать, изменять и удалять объекты базы данных (таблицы, представления и т.п.)</p>
+
+<!-- more -->
+
+
+<h2>Типы данных SQL</h2>
+
+<p>В SQL существуют следующие четыре группы типов данных:</p>
+
+<h3>Числовые:</h3>
+
+<p><strong>Целые:</strong></p>
+
+<ul>
+<li>TINYINT[] - 1 байт</li>
+<li>SMALLINT[] - 2 байта</li>
+<li>MEDIUMINT[] - 3 байта</li>
+<li>INT[] - 4 байта</li>
+<li>BIGINT[] - 8 байт</li>
+</ul>
+
+
+<p><code>В квадратных скобках указывается количество выводимых символов</code></p>
+
+<p><strong>С плавающей точкой:</strong></p>
+
+<ul>
+<li>FLOAT[M, D] - 4 байта</li>
+<li>DOUBLE[M, D] (REAL, DOUBLE PRECISION) - 8 байт</li>
+<li>DECIMAL[M, D] (DEC, NUMERIC) - M + 2 байта</li>
+</ul>
+
+
+<p><code>В квадратных скобках указывается количество под мантиссу и экспоненту</code></p>
+
+<p><strong>Бинарные:</strong></p>
+
+<ul>
+<li>BOOLEAN - 1 байт (алиас для tinyint)</li>
+<li>BIT</li>
+</ul>
+
+
+<h3>Строковые:</h3>
+
+<ul>
+<li>CHAR(M) - M - кол-во символов, строка фиксированной длины</li>
+<li>VARCHAR(M) - строка переменной длины</li>
+<li>TINYBLOB, TINYTEXT - 2<sup>8</sup> - 1 символов</li>
+<li>BLOB, TEXT - 2<sup>16</sup> - 1 символов</li>
+<li>MEDIUMBLOB, MEDIUMTEXT - 2<sup>24</sup> - 1 символов</li>
+<li>LONGBLOB, LONGTEXT - 2<sup>32</sup> - 1 символов</li>
+<li>ENUM(‘value1’, ‘value2’&hellip;) - 1 или 2 байта, 65536 допустимых значений</li>
+<li>SET(‘value1’, ‘value2’&hellip;) - 1,2,3,4 или 8 байт, 64 элемента может принимать несколько значений из этого множества</li>
+</ul>
+
+
+<p><code>Главное различие char и varchar: для char сразу выделяется место под максимальное количество символов, что повышает эффективность поиска но увеличивает расход дискового пространнства.</code></p>
+
+<h3>Календарные:</h3>
+
+<ul>
+<li>DATE - 3 байта, от “1000-01-01” до “9999-12-31”</li>
+<li>TIME - 3 байта, от “-828:59:59” до “828:59:59”</li>
+<li>DATETIME - 8 байт, от “1000-01-01 00:00:00” до “9999-12-31 59:59:59”</li>
+<li>TIMESTAMP - 4 байта, от “1970-01-01 00:00:00” до “2038-12-31 59:59:59” хранится количество секунд от 1970 года</li>
+<li>YEAR - 1 байт, YEAR(4) c 1901 до 2155; YEAR(2) c 1970 до 2069</li>
+</ul>
+
+
+<h3>NULL:</h3>
+
+<ul>
+<li>при конкатенации cтрок с NULL все превращается в NULL.</li>
+<li>любые проверки операторами &lt;, > =, &lt;> дают false</li>
+<li>COUNT(поле) - считает кол-во не NULL строк, хотя COUNT(*) считает все строки включая NULL</li>
+</ul>
+
+
+<h2>Оператор CREATE</h2>
+
+<p>Общая сигнатура такова:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>    <span class="k">CREATE</span> <span class="p">[</span><span class="k">TEMPORARY</span><span class="p">]</span> <span class="k">TABLE</span> <span class="p">[</span><span class="n">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span><span class="p">]</span> <span class="n">tbl_name</span>
+</span><span class='line'>        <span class="p">(</span><span class="n">create_definition</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">table_options</span><span class="p">]</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">partition_options</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Где create_definition:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>        <span class="n">col_name</span> <span class="n">column_definition</span>
+</span><span class='line'>      <span class="o">|</span> <span class="p">[</span><span class="k">CONSTRAINT</span> <span class="p">[</span><span class="n">symbol</span><span class="p">]]</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">[</span><span class="n">index_type</span><span class="p">]</span> <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">index_option</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">hellip</span><span class="p">;</span>
+</span><span class='line'>      <span class="o">|</span> <span class="err">{</span><span class="k">INDEX</span><span class="o">|</span><span class="k">KEY</span><span class="err">}</span> <span class="p">[</span><span class="n">index_name</span><span class="p">]</span> <span class="p">[</span><span class="n">index_type</span><span class="p">]</span> <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">index_option</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">hellip</span><span class="p">;</span>
+</span><span class='line'>      <span class="o">|</span> <span class="p">[</span><span class="k">CONSTRAINT</span> <span class="p">[</span><span class="n">symbol</span><span class="p">]]</span> <span class="k">UNIQUE</span> <span class="p">[</span><span class="k">INDEX</span><span class="o">|</span><span class="k">KEY</span><span class="p">]</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">index_name</span><span class="p">]</span> <span class="p">[</span><span class="n">index_type</span><span class="p">]</span> <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">index_option</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">hellip</span><span class="p">;</span>
+</span><span class='line'>      <span class="o">|</span> <span class="err">{</span><span class="n">FULLTEXT</span><span class="o">|</span><span class="n">SPATIAL</span><span class="err">}</span> <span class="p">[</span><span class="k">INDEX</span><span class="o">|</span><span class="k">KEY</span><span class="p">]</span> <span class="p">[</span><span class="n">index_name</span><span class="p">]</span> <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">index_option</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">hellip</span><span class="p">;</span>
+</span><span class='line'>      <span class="o">|</span> <span class="p">[</span><span class="k">CONSTRAINT</span> <span class="p">[</span><span class="n">symbol</span><span class="p">]]</span> <span class="k">FOREIGN</span> <span class="k">KEY</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">index_name</span><span class="p">]</span> <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span> <span class="n">reference_definition</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">CHECK</span> <span class="p">(</span><span class="n">expr</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Где column_definition:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>    <span class="n">data_type</span> <span class="p">[</span><span class="k">NOT</span> <span class="k">NULL</span> <span class="o">|</span> <span class="k">NULL</span><span class="p">]</span> <span class="p">[</span><span class="k">DEFAULT</span> <span class="n">default_value</span><span class="p">]</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">AUTO_INCREMENT</span><span class="p">]</span> <span class="p">[</span><span class="k">UNIQUE</span> <span class="p">[</span><span class="k">KEY</span><span class="p">]</span> <span class="o">|</span> <span class="p">[</span><span class="k">PRIMARY</span><span class="p">]</span> <span class="k">KEY</span><span class="p">]</span>
+</span><span class='line'>          <span class="p">[</span><span class="k">COMMENT</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">string</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;]</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">COLUMN_FORMAT</span> <span class="err">{</span><span class="n">FIXED</span><span class="o">|</span><span class="k">DYNAMIC</span><span class="o">|</span><span class="k">DEFAULT</span><span class="err">}</span><span class="p">]</span>
+</span><span class='line'>          <span class="p">[</span><span class="k">STORAGE</span> <span class="err">{</span><span class="n">DISK</span><span class="o">|</span><span class="n">MEMORY</span><span class="o">|</span><span class="k">DEFAULT</span><span class="err">}</span><span class="p">]</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">reference_definition</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Где reference_definition:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>    <span class="k">REFERENCES</span> <span class="n">tbl_name</span> <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span>
+</span><span class='line'>          <span class="p">[</span><span class="k">MATCH</span> <span class="k">FULL</span> <span class="o">|</span> <span class="k">MATCH</span> <span class="k">PARTIAL</span> <span class="o">|</span> <span class="k">MATCH</span> <span class="k">SIMPLE</span><span class="p">]</span>
+</span><span class='line'>          <span class="p">[</span><span class="k">ON</span> <span class="k">DELETE</span> <span class="n">reference_option</span><span class="p">]</span>
+</span><span class='line'>          <span class="p">[</span><span class="k">ON</span> <span class="k">UPDATE</span> <span class="n">reference_option</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Где reference_option:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>    <span class="k">RESTRICT</span> <span class="o">|</span> <span class="k">CASCADE</span> <span class="o">|</span> <span class="k">SET</span> <span class="k">NULL</span> <span class="o">|</span> <span class="k">NO</span> <span class="n">ACTION</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h2>Оператор ALTER</h2>
+
+<p>Общая сигнатура такова:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>    <span class="k">ALTER</span> <span class="p">[</span><span class="n">ONLINE</span><span class="o">|</span><span class="n">OFFLINE</span><span class="p">]</span> <span class="p">[</span><span class="k">IGNORE</span><span class="p">]</span> <span class="k">TABLE</span> <span class="n">tbl_name</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">alter_specification</span> <span class="p">[,</span> <span class="n">alter_specification</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">hellip</span><span class="p">;]</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">partition_options</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Где alter_specification:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>    <span class="n">table_options</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">ADD</span> <span class="p">[</span><span class="k">COLUMN</span><span class="p">]</span> <span class="n">col_name</span> <span class="n">column_definition</span>
+</span><span class='line'>            <span class="p">[</span><span class="k">FIRST</span> <span class="o">|</span> <span class="k">AFTER</span> <span class="n">col_name</span> <span class="p">]</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">ADD</span> <span class="p">[</span><span class="k">COLUMN</span><span class="p">]</span> <span class="p">(</span><span class="n">col_name</span> <span class="n">column_definition</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">ADD</span> <span class="err">{</span><span class="k">INDEX</span><span class="o">|</span><span class="k">KEY</span><span class="err">}</span> <span class="p">[</span><span class="n">index_name</span><span class="p">]</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">index_type</span><span class="p">]</span> <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span> <span class="p">[</span><span class="n">index_option</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">hellip</span><span class="p">;</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">ADD</span> <span class="p">[</span><span class="k">CONSTRAINT</span> <span class="p">[</span><span class="n">symbol</span><span class="p">]]</span> <span class="k">PRIMARY</span> <span class="k">KEY</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">index_type</span><span class="p">]</span> <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span> <span class="p">[</span><span class="n">index_option</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">hellip</span><span class="p">;</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">ADD</span> <span class="p">[</span><span class="k">CONSTRAINT</span> <span class="p">[</span><span class="n">symbol</span><span class="p">]]</span>
+</span><span class='line'>            <span class="k">UNIQUE</span> <span class="p">[</span><span class="k">INDEX</span><span class="o">|</span><span class="k">KEY</span><span class="p">]</span> <span class="p">[</span><span class="n">index_name</span><span class="p">]</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">index_type</span><span class="p">]</span> <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span> <span class="p">[</span><span class="n">index_option</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">hellip</span><span class="p">;</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">ADD</span> <span class="n">FULLTEXT</span> <span class="p">[</span><span class="k">INDEX</span><span class="o">|</span><span class="k">KEY</span><span class="p">]</span> <span class="p">[</span><span class="n">index_name</span><span class="p">]</span>
+</span><span class='line'>            <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span> <span class="p">[</span><span class="n">index_option</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">hellip</span><span class="p">;</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">ADD</span> <span class="n">SPATIAL</span> <span class="p">[</span><span class="k">INDEX</span><span class="o">|</span><span class="k">KEY</span><span class="p">]</span> <span class="p">[</span><span class="n">index_name</span><span class="p">]</span>
+</span><span class='line'>            <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span> <span class="p">[</span><span class="n">index_option</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">hellip</span><span class="p">;</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">ADD</span> <span class="p">[</span><span class="k">CONSTRAINT</span> <span class="p">[</span><span class="n">symbol</span><span class="p">]]</span>
+</span><span class='line'>            <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">[</span><span class="n">index_name</span><span class="p">]</span> <span class="p">(</span><span class="n">index_col_name</span><span class="p">,</span><span class="o">&amp;</span><span class="n">hellip</span><span class="p">;)</span>
+</span><span class='line'>            <span class="n">reference_definition</span>
+</span><span class='line'>      <span class="o">|</span> <span class="n">ALGORITHM</span> <span class="p">[</span><span class="o">=</span><span class="p">]</span> <span class="err">{</span><span class="k">DEFAULT</span><span class="o">|</span><span class="n">INPLACE</span><span class="o">|</span><span class="k">COPY</span><span class="err">}</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">ALTER</span> <span class="p">[</span><span class="k">COLUMN</span><span class="p">]</span> <span class="n">col_name</span> <span class="err">{</span><span class="k">SET</span> <span class="k">DEFAULT</span> <span class="n">literal</span> <span class="o">|</span> <span class="k">DROP</span> <span class="k">DEFAULT</span><span class="err">}</span>
+</span><span class='line'>      <span class="o">|</span> <span class="n">CHANGE</span> <span class="p">[</span><span class="k">COLUMN</span><span class="p">]</span> <span class="n">old_col_name</span> <span class="n">new_col_name</span> <span class="n">column_definition</span>
+</span><span class='line'>            <span class="p">[</span><span class="k">FIRST</span><span class="o">|</span><span class="k">AFTER</span> <span class="n">col_name</span><span class="p">]</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">LOCK</span> <span class="p">[</span><span class="o">=</span><span class="p">]</span> <span class="err">{</span><span class="k">DEFAULT</span><span class="o">|</span><span class="k">NONE</span><span class="o">|</span><span class="n">SHARED</span><span class="o">|</span><span class="k">EXCLUSIVE</span><span class="err">}</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">MODIFY</span> <span class="p">[</span><span class="k">COLUMN</span><span class="p">]</span> <span class="n">col_name</span> <span class="n">column_definition</span>
+</span><span class='line'>            <span class="p">[</span><span class="k">FIRST</span> <span class="o">|</span> <span class="k">AFTER</span> <span class="n">col_name</span><span class="p">]</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">DROP</span> <span class="p">[</span><span class="k">COLUMN</span><span class="p">]</span> <span class="n">col_name</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">DROP</span> <span class="k">PRIMARY</span> <span class="k">KEY</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">DROP</span> <span class="err">{</span><span class="k">INDEX</span><span class="o">|</span><span class="k">KEY</span><span class="err">}</span> <span class="n">index_name</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">DROP</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="n">fk_symbol</span>
+</span><span class='line'>      <span class="o">|</span> <span class="n">DISABLE</span> <span class="n">KEYS</span>
+</span><span class='line'>      <span class="o">|</span> <span class="n">ENABLE</span> <span class="n">KEYS</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">RENAME</span> <span class="p">[</span><span class="k">TO</span><span class="o">|</span><span class="k">AS</span><span class="p">]</span> <span class="n">new_tbl_name</span>
+</span><span class='line'>      <span class="o">|</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">col_name</span> <span class="p">[,</span> <span class="n">col_name</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">hellip</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h2>Ограничения (CONSTRAINT) на значения данных</h2>
+
+<p><strong>Составной первичный ключ:</strong>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>    <span class="k">CREATE</span> <span class="n">TABEL</span> <span class="k">table_name</span> <span class="p">(</span>
+</span><span class='line'>        <span class="n">firstname</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">lastname</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">city</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+</span><span class='line'>        <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">firstname</span><span class="p">,</span> <span class="n">lastname</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><strong>Проверка вводимых значений CHECK:</strong>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>    <span class="k">CREATE</span> <span class="n">TABEL</span> <span class="k">table_name</span> <span class="p">(</span>
+</span><span class='line'>        <span class="n">id</span> <span class="nb">INTEGER</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">firstname</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">comm</span> <span class="nb">DECIMAL</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">city</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+</span><span class='line'>        <span class="k">CHECK</span><span class="p">(</span><span class="n">comm</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="p">.</span><span class="mi">15</span> <span class="k">OR</span> <span class="n">city</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">Barcelona</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span>
+</span><span class='line'>    <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><strong>Именование ограничений и удаление их:</strong>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>    <span class="k">CREATE</span> <span class="n">TABEL</span> <span class="k">table_name</span> <span class="p">(</span>
+</span><span class='line'>        <span class="n">id</span> <span class="nb">INTEGER</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">firstname</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">comm</span> <span class="nb">DECIMAL</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">city</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+</span><span class='line'>        <span class="k">CONSTRAINT</span> <span class="n">LuckyBarcelona</span> <span class="k">CHECK</span><span class="p">(</span><span class="n">comm</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="p">.</span><span class="mi">15</span> <span class="k">OR</span> <span class="n">city</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">Barcelona</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span>
+</span><span class='line'>    <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<blockquote><p>CONSTRAINT — является не обязательным;<br>
+<em>Использование: </em><br>
+ALTER TABLE table_name DROP CONSTRAINT  LuckyBarcelona</p></blockquote>
+
+<p><strong>Добавление внешнего ключа через alter table:</strong>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>    <span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Salespeople</span> <span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="k">column</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Customers</span> <span class="p">(</span><span class="k">column</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<h3>Действия выполняемые по ссылке:</h3>
+
+<p><strong>CASCADE:</strong>
+    - п и UPDATE — значение внешнего ключа заменяется новым значением;
+    -   п и DELETE — строки внеш. Ключа будут удалены.</p>
+
+<p><strong>SET NULL</strong> — значения внешнего ключа будут установлены в NULL.</p>
+
+<p><strong>SET DEFAULT</strong> — будет установлено зн-е по дефолту для внешнего ключа.</p>
+
+<p><strong>NO ACTION</strong> — значение по дефолту, зн-е не меняется но если есть ссылки оператор игнорируется.</p>
+
+<p><em>Пример:</em>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'>    <span class="k">CREATE</span> <span class="n">TABEL</span> <span class="k">table_name</span> <span class="p">(</span>
+</span><span class='line'>        <span class="n">id</span> <span class="nb">INTEGER</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">firstname</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">snum</span> <span class="nb">INTEGER</span> <span class="k">REFERENCES</span> <span class="n">other_table</span>
+</span><span class='line'>            <span class="k">ON</span> <span class="k">UPDATE</span> <span class="k">CASCADE</span> <span class="k">ON</span> <span class="k">DELETE</span> <span class="k">NO</span> <span class="n">ACTION</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></p>
+]]></content>
+  </entry>
+  
+</feed>
