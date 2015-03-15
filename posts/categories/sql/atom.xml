@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Sql | Geek Notes]]></title>
   <link href="http://fizikovnet.github.io/posts/categories/sql/atom.xml" rel="self"/>
   <link href="http://fizikovnet.github.io/"/>
-  <updated>2015-03-09T19:35:21+03:00</updated>
+  <updated>2015-03-15T22:33:56+03:00</updated>
   <id>http://fizikovnet.github.io/</id>
   <author>
     <name><![CDATA[fizikovnet]]></name>
@@ -12,6 +12,110 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Выборка данных SQL. Операторы SELECT, in, BETWEEN, LIKE, GROUP by и HAVING]]></title>
+    <link href="http://fizikovnet.github.io/posts/2015/03/vyborka-dannykh-sql-opieratory-select.html"/>
+    <updated>2015-03-15T21:23:26+03:00</updated>
+    <id>http://fizikovnet.github.io/posts/2015/03/vyborka-dannykh-sql-opieratory-select</id>
+    <content type="html"><![CDATA[<p>В данном конспекте рассмотрим как производится выборка данных из базы с помощью оператора SELECT. Использование DISTINCT. Операторы сравнения и логические операторы применяемые в предложении WHERE. А также операторы IN, BETWEEN и LIKE. Агрегатные функции типа COUNT(), AVG() и т.д. И рассмотрим применение операторов GROUP BY и HAVING.</p>
+
+<!-- more -->
+
+
+<p>И так простейшая выборка данных осуществляется оператором SELECT:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span>  <span class="k">table_name</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+Для выбора не повторяющихся значений в столбцах применяется ключевое слово DISTINCT:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="k">DISTINCT</span> <span class="o">*</span> <span class="k">FROM</span>  <span class="k">table_name</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<blockquote><p>DISTINCT применяется ко всем столбцам указанным в операторе SELECT</p></blockquote>
+
+<p>Для фильтрования выборки используется предложение <strong>WHERE</strong>, после которого описывается предикат.</p>
+
+<p>В предложении <strong>WHERE</strong> могут использоваться следующие операторы:</p>
+
+<ul>
+<li><p><em>Операторы сравнения:</em> =, >, &lt;, >=, &lt;=, &lt;>. Если в в выражении будет вычислен NULL, то результатом будет UNKNOWN.</p></li>
+<li><p><em>Логические операторы:</em> - OR, AND, NOT могут принимать три значения: TRUE, FALSE и UNKNOWN.</p></li>
+<li><p>IN — оператор перечисления:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">Salespeople</span>
+</span><span class='line'><span class="k">WHERE</span>  <span class="n">city</span> <span class="k">IN</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">Barcelona</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;,</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">London</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;);</span>
+</span></code></pre></td></tr></table></div></figure></p></li>
+<li><p>BETWEEN — выбор из диапазона:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">Salespeople</span>
+</span><span class='line'><span class="k">WHERE</span>  <span class="n">comm</span> <span class="k">BETWEEN</span> <span class="p">.</span><span class="mi">10</span> <span class="k">AND</span> <span class="p">.</span><span class="mi">20</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></p></li>
+<li><p>LIKE — оператор поиска подстрок в текстах. В шаблонах используются два символа: &lsquo;_&rsquo; (соответствует одному символу) и &lsquo;%&rsquo; (соответствует любому символу, даже его отсутствие).</p></li>
+<li><p>IS NULL и IS NOT NULL — проверка на NULL.</p></li>
+</ul>
+
+
+<h2>Агрегатные функции.</h2>
+
+<p>Агрегатные функции применяются сразу для всей группы столбцов, которые были выбраны, и вычисляет для них единственное значение.</p>
+
+<p><em>Список всех агрегатных функций:</em></p>
+
+<ul>
+<li>COUNT — количество строк или не пустых значений (не NULL):</li>
+<li>SUM — сумма значений</li>
+<li>AVG — среднее арифметическое:</li>
+<li>MAX — максимально значений</li>
+<li>MIN — минимально значений</li>
+</ul>
+
+
+<h3>Применение GROUP BY и HAVING.</h3>
+
+<p><strong>GROUP BY</strong> позволяет выделить из отдельного столбца группы значений этого столбца и применить у ним агрегатную функцию.
+ Допустим, есть у нас такая таблица:</p>
+
+<p><img src="/images/img_2015_03/12.png" alt="" /></p>
+
+<p>При выполнении следующего запроса, сначала все выбранные строки группируются по одинаковому значению в поле City, затем к каждой группе применяется агрегатная функция MAX():</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">Cnum</span><span class="p">,</span> <span class="n">Cname</span><span class="p">,</span> <span class="n">City</span><span class="p">,</span> <span class="k">MAX</span><span class="p">(</span> <span class="n">Rating</span> <span class="p">)</span>
+</span><span class='line'><span class="k">FROM</span> <span class="n">Customers</span>
+</span><span class='line'><span class="k">GROUP</span> <span class="k">BY</span> <span class="n">City</span>
+</span></code></pre></td></tr></table></div></figure>
+<em>Результат:</em></p>
+
+<p><img src="/images/img_2015_03/13.png" alt="" /></p>
+
+<p>Так как предложение WHERE фильтрует строки до того как они попадут в группы, т.е. до применения GROUP BY, то его использовать не возможно, если нам надо задать условие для всей группы. Для этого есть оператор <strong>HAVING</strong>, который похож на WHERE только задает фильтр сразу к группе.</p>
+
+<p>Допустим, есть следующая таблица:</p>
+
+<p><img src="/images/img_2015_03/14.png" alt="" /></p>
+
+<p>При выполнении следующего запроса, сначала все строки группируются по одинаковым сочетаиням значений в полях Snum и  Odate, а затем, к каждой группе применяет опертор MAX():</p>
+
+<p><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">Snum</span><span class="p">,</span> <span class="n">Odate</span><span class="p">,</span> <span class="k">MAX</span><span class="p">(</span> <span class="n">Amt</span> <span class="p">)</span>
+</span><span class='line'><span class="k">FROM</span> <span class="n">Orders</span>
+</span><span class='line'><span class="k">GROUP</span> <span class="k">BY</span> <span class="n">Snum</span><span class="p">,</span> <span class="n">Odate</span>
+</span><span class='line'><span class="k">HAVING</span> <span class="k">MAX</span><span class="p">(</span> <span class="n">Amt</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3000</span><span class="p">.</span><span class="mi">00</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p><em>Результат:</em></p>
+
+<p><img src="/images/img_2015_03/15.png" alt="" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Типы данных и операторы определения данных SQL]]></title>
